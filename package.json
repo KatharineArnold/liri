@@ -1,0 +1,19 @@
+{
+  "name": "liri",
+  "version": "1.0.0",
+  "description": "like siri but for text",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KatharineArnold/liri.git"
+  },
+  "author": "Katharine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KatharineArnold/liri/issues"
+  },
+  "homepage": "https://github.com/KatharineArnold/liri#readme"
+}
