@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/KatharineArnold/liri/issues"
   },
-  "homepage": "https://github.com/KatharineArnold/liri#readme"
+  "homepage": "https://github.com/KatharineArnold/liri#readme",
+  "dependencies": {
+    "request": "^2.87.0"
+  }
 }
