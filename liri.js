@@ -119,7 +119,7 @@ function getRottonTomatoes(movieData) {
     }
 }
 
-
+//random text function
 function doWhatItSays() {
     //read the .txt file
     fs.readFile("random.txt", "utf8", function (error, data) {
@@ -130,14 +130,16 @@ function doWhatItSays() {
             let cmdString = data.split(',');
             //get first string and trim white space
             let command = cmdString[0].trim();
+            //get index one or one argument only in txt file
             let param = (cmdString[1] || "").trim();
+            //run command function
             runCommand(command, param);
         }
 
     });
 }
 
-
+//function to act on specific commands
 function runCommand(command, arg) {
     if (command === `my-tweets`) {
         console.log('Listing my tweets');
@@ -156,7 +158,7 @@ function runCommand(command, arg) {
 }
 
 
-
+//if user input is do what it says run that function, otherwise run function to act on other commands
 if (liriCommand === `do-what-it-says`) {
     doWhatItSays();
 } else {
