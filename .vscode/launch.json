@@ -20,7 +20,7 @@
             "program": "${workspaceFolder}/liri.js",
             "args": [
                 "movie-this",
-                "matrix"
+                "avengers infinity war"
             ]
         },
         {

@@ -1,9 +1,11 @@
+//load required node modules
 require("dotenv").config();
 var fs = require('fs');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var keys = require("./keys");
 var request = require('request');
+//load keys
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
@@ -11,15 +13,17 @@ var client = new Twitter(keys.twitter);
 // Read command line arguments
 let cmdArgs = process.argv;
 
-// The LIRI command is the second argument
+// The LIRI command is at index 2 
 let liriCommand = cmdArgs[2];
 
-//  may contain spaces fix
+//  spaces fix and grab argument from index 3
 let liriArg = '';
 for (let i = 3; i < cmdArgs.length; i++) {
     liriArg += cmdArgs[i] + ' ';
 }
 
+
+//twitter function
 function getTweets() {
     var params = {
         screen_name: 'KatharineArno19',
@@ -27,7 +31,7 @@ function getTweets() {
     };
     client.get('statuses/user_timeline', params, function (error, tweets, response) {
         if (!error) {
-            //need a loop
+            //need a loop to get all tweets
             for (let j = 0; j < tweets.length; j++) {
                 console.log(tweets[j].text);
 
@@ -37,9 +41,10 @@ function getTweets() {
 }
 
 
-
+//spotify function
 function getSongInfo(song) {
     let search;
+    //if no song is specified search ace of base the sign
     if (song === '') {
         search = 'The Sign Ace Of Base';
     } else {
@@ -49,22 +54,18 @@ function getSongInfo(song) {
         .then(function (response) {
             let songs = response.tracks.items;
             let firstSong = songs[0];
-            //Artist(s)
-            //loop through to get all artist NOT WORKING
-            // for (let k = 0; k < songs.length; k++) {
-            // }
+            //more than one artisit may be listed for one song join them all with a ,
             let artists = firstSong.artists
                 .map(artist => artist.name)
                 .join(', ');
+            //the artist(s)
             console.log("Artist(s): " + artists);
-
-            // console.log("here is the artist" + firstSong.artists);
-
-            // The album that the song is from
-            console.log(firstSong.album.name);
-            // A preview link of the song from Spotify
-            console.log(firstSong.external_urls.spotify);
             // The song's name
+            console.log("Song:" + firstSong.name);
+            // The album that the song is from
+            console.log("Album:" + firstSong.album.name);
+            // A preview link of the song from Spotify
+            console.log("Link:" + firstSong.external_urls.spotify);
         })
         .catch(function (err) {
             console.log(err);
@@ -73,8 +74,11 @@ function getSongInfo(song) {
 
 
 
+
+//imdb function
 function getMovieInfo(movie) {
     let search;
+    //if no movie specified search mr nobody
     if (movie === '') {
         search = 'Mr. Nobody';
     } else {
@@ -90,22 +94,43 @@ function getMovieInfo(movie) {
     // Send request to OMDB
     request(queryUrl, function (error, response, body) {
         if (!error && response.statusCode === 200) {
-            console.log("Release Year: " + JSON.parse(body).Year);
+            let movieData = JSON.parse(body);
+            console.log("Title: " + movieData.Title);
+            console.log("Release Year: " + movieData.Year);
+            console.log("IMDB Rating: " + movieData.imdbRating);
+            //call function that loops through ratings to get rotton tomatoes
+            let rating = getRottonTomatoes(movieData);
+            console.log("Rotten Tomatoes Rating: " + rating);
+            console.log("Country Movie Produced: " + movieData.Country);
+            console.log("Language: " + movieData.Language);
+            console.log("Plot: " + movieData.Plot);
+            console.log("Actors: " + movieData.Actors);
         };
     });
 }
 
+//loop through ratings to get rotton tomatoes rating
+function getRottonTomatoes(movieData) {
+    for (let k = 0; k < movieData.Ratings.length; k++) {
+        let currentRating = movieData.Ratings[k];
+        if (currentRating.Source === "Rotten Tomatoes") {
+            return currentRating.Value
+        }
+    }
+}
+
 
 function doWhatItSays() {
+    //read the .txt file
     fs.readFile("random.txt", "utf8", function (error, data) {
-
-        // If the code experiences any errors it will log the error to the console.
         if (error) {
             return console.log(error);
         } else {
+            //seperate at ,
             let cmdString = data.split(',');
+            //get first string and trim white space
             let command = cmdString[0].trim();
-            let param = cmdString[1].trim();
+            let param = (cmdString[1] || "").trim();
             runCommand(command, param);
         }
 
